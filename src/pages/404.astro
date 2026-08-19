@@ -1,0 +1,14 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+<Layout title="Page Not Found | Khurafaati Sameer" description="The page you are looking for could not be found.">
+  <main class="not-found">
+    <div class="code">404</div>
+    <h1>Yeh page kahin kho gaya.</h1>
+    <p>The page may have moved, been removed, or the URL may be incorrect.</p>
+    <div class="actions"><a href="/" class="primary">Go Home</a><a href="/articles/" class="secondary">Browse Articles</a></div>
+  </main>
+  <style>
+    .not-found{min-height:70vh;display:grid;place-items:center;align-content:center;text-align:center;padding:40px 20px}.code{font-size:clamp(90px,18vw,180px);font-weight:900;line-height:.8;color:var(--accent);letter-spacing:-8px}.not-found h1{font-size:clamp(28px,5vw,46px);margin:30px auto 10px;letter-spacing:-1px}.not-found p{max-width:520px;color:var(--muted);margin:auto}.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:25px}.actions a{padding:11px 18px;border-radius:10px;font-weight:800}.primary{background:var(--accent);color:white}.secondary{border:1px solid var(--border)}
+  </style>
+</Layout>
