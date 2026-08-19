@@ -10,7 +10,7 @@ const articles = defineCollection({
     author: z.string().default('Khurafaati Sameer'),
     category: z.string().min(1),
     tags: z.array(z.string()).default([]),
-    featuredImage: z.string().url().optional(),
+    featuredImage: z.string().optional(),
     imageAlt: z.string().optional(),
     readingTime: z.number().int().positive().optional(),
     draft: z.boolean().default(false),
