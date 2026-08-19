@@ -1,0 +1,21 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+<Layout title="Contact | Khurafaati Sameer" description="Contact Khurafaati Sameer for questions, collaborations, sponsorships and business enquiries.">
+<main class="wrap">
+  <header><p class="eyebrow">LET'S CONNECT</p><h1>Get in Touch</h1><p class="intro">Question, collaboration, sponsorship or business enquiry? Send a message and it will be delivered through the site's Netlify Forms inbox.</p></header>
+  <form name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/thank-you/" class="form">
+    <input type="hidden" name="form-name" value="contact"/>
+    <input type="hidden" name="subject" value="New Khurafaati Sameer contact enquiry"/>
+    <p class="hidden"><label>Don't fill this out: <input name="bot-field"/></label></p>
+    <div class="row"><label>Name<input name="name" type="text" autocomplete="name" required/></label><label>Email<input name="email" type="email" autocomplete="email" required/></label></div>
+    <div class="row"><label>Subject<input name="subject_line" type="text" required/></label><label>Inquiry type<select name="inquiry_type"><option>General Inquiry</option><option>Collaboration</option><option>Sponsorship</option><option>Business</option><option>Reader Feedback</option></select></label></div>
+    <label>Message<textarea name="message" rows="8" required></textarea></label>
+    <label class="consent"><input type="checkbox" name="consent" value="yes" required/> I confirm that the information above is accurate and I agree to be contacted regarding this enquiry.</label>
+    <button type="submit">Send Message 🚀</button>
+  </form>
+</main>
+<style>
+.wrap{max-width:850px;margin:auto;padding:70px 20px 100px}.eyebrow{font-size:11px;font-weight:900;color:var(--accent);letter-spacing:.8px}.wrap h1{color:var(--text);font-size:clamp(40px,6vw,62px);letter-spacing:-2px;margin:5px 0 10px}.intro{max-width:680px;color:var(--muted);line-height:1.7}.form{margin-top:35px;border:1px solid var(--border);border-radius:16px;padding:25px;background:#fff;box-shadow:0 10px 30px rgba(0,0,0,.05)}.row{display:grid;grid-template-columns:1fr 1fr;gap:16px}label{display:grid;gap:7px;margin-bottom:17px;font-size:12px;font-weight:800}input,select,textarea{width:100%;box-sizing:border-box;border:1px solid #ddd;border-radius:9px;padding:11px 12px;font:inherit;font-weight:400;background:#fff}textarea{resize:vertical}.consent{display:flex;grid-template-columns:none;display:flex;align-items:flex-start;gap:8px;color:var(--muted);font-weight:600}.consent input{width:auto;margin-top:2px}.form button{border:0;background:var(--accent);color:#fff;border-radius:10px;padding:12px 20px;font-weight:900;cursor:pointer}.hidden{position:absolute;left:-10000px}@media(max-width:600px){.wrap{padding:45px 16px 70px}.row{grid-template-columns:1fr}.form{padding:18px}}
+</style>
+</Layout>

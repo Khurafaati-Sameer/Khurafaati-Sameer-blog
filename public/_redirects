@@ -1,0 +1,2 @@
+# Ensure unknown routes resolve to Astro's generated 404 page
+/*    /404.html    404
