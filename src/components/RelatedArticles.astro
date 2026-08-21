@@ -1,0 +1,176 @@
+---
+import { getCollection } from 'astro:content';
+
+const { currentArticle } = Astro.props;
+const allArticles = await getCollection('articles');
+
+const normalize = (value = '') => value.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+const words = (value = '') => new Set(normalize(value).split(/\s+/).filter(word => word.length > 3));
+
+const current = currentArticle.data;
+const currentTags = new Set((current.tags ?? []).map(normalize));
+const currentTitleWords = words(current.title);
+
+const related = allArticles
+  .filter(article => !article.data.draft && article.id !== currentArticle.id)
+  .map(article => {
+    const data = article.data;
+    const articleTags = (data.tags ?? []).map(normalize);
+    const sharedTags = articleTags.filter(tag => currentTags.has(tag)).length;
+    const titleOverlap = [...words(data.title)].filter(word => currentTitleWords.has(word)).length;
+    const sameCategory = normalize(data.category) === normalize(current.category);
+
+    let score = 0;
+    if (sameCategory) score += 6;
+    score += sharedTags * 4;
+    score += titleOverlap * 2;
+
+    // Use publication date only as a deterministic tie-breaker, not as the main relevance signal.
+    const published = data.pubDate?.getTime?.() ?? 0;
+    return { article, data, score, published };
+  })
+  .sort((a, b) => b.score - a.score || b.published - a.published)
+  .slice(0, 3);
+---
+
+{related.length > 0 && (
+  <section class="related" aria-labelledby="related-heading">
+    <div class="related-heading">
+      <div>
+        <span class="eyebrow">KEEP READING</span>
+        <h2 id="related-heading">You May Also Like</h2>
+      </div>
+      <a class="all-link" href="/articles/">View all articles →</a>
+    </div>
+
+    <div class="related-grid">
+      {related.map(({ article, data }) => (
+        <a class="related-card" href={`/articles/${article.id}/`}>
+          <div class="related-category">{data.category}</div>
+          <h3>{data.title}</h3>
+          <p>{data.description}</p>
+          <div class="related-meta">
+            <span>{data.author}</span>
+            {data.readingTime && <span>• {data.readingTime} min read</span>}
+          </div>
+          <span class="read-link">Read article →</span>
+        </a>
+      ))}
+    </div>
+  </section>
+)}
+
+<style>
+  .related {
+    margin-top: 58px;
+    padding-top: 34px;
+    border-top: 1px solid var(--border);
+  }
+
+  .related-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 22px;
+  }
+
+  .eyebrow {
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 1.2px;
+  }
+
+  .related-heading h2 {
+    margin: 6px 0 0;
+    font-size: clamp(27px, 4vw, 36px);
+    line-height: 1.05;
+    letter-spacing: -1px;
+  }
+
+  .all-link {
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .related-card {
+    display: flex;
+    min-height: 230px;
+    flex-direction: column;
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--surface, #fff);
+    text-decoration: none;
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  }
+
+  .related-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent);
+    box-shadow: 0 10px 30px rgba(0,0,0,.08);
+  }
+
+  .related-category {
+    margin-bottom: 10px;
+    color: var(--accent);
+    font-size: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+  }
+
+  .related-card h3 {
+    margin: 0 0 10px;
+    color: var(--text, #111);
+    font-size: 20px;
+    line-height: 1.2;
+  }
+
+  .related-card p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .related-meta {
+    display: flex;
+    gap: 5px;
+    margin-top: auto;
+    padding-top: 16px;
+    color: var(--muted);
+    font-size: 10px;
+  }
+
+  .read-link {
+    margin-top: 10px;
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 900;
+  }
+
+  @media (max-width: 760px) {
+    .related-heading {
+      align-items: start;
+      flex-direction: column;
+    }
+
+    .related-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .related-card {
+      min-height: 0;
+    }
+  }
+</style>
